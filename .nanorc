@@ -1,0 +1,30 @@
+# File ~/.nanorc ini untuk mengkonfigurasi editor text nano
+# Sesuaikan dengan keinginan dan kebutuhan
+
+# Untuk menampilkan syntax highlighting berdasarkan tipe file
+include "/data/data/com.termux/files/usr/share/nano/*nanorc"
+
+# Konfigurasi tampilan dan fungsi
+set autoindent
+set mouse
+set multibuffer
+set linenumbers
+set tabstospaces
+set tabsize 2
+#set softwrap
+set constantshow
+set casesensitive
+set regexp
+
+# Konfigurasi ubah shortcut
+bind ^A mark all
+bind ^Q exit all
+bind ^Z undo all
+bind ^Y redo all
+bind ^S savefile all
+bind ^W writeout all
+bind ^/ comment main
+bind ^Space complete main
+bind ^C copy main
+bind ^V paste main
+bind ^X cut main

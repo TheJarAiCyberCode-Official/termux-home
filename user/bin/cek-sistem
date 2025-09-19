@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Ambil nama produsen dan model perangkat, lalu simpan dan gabungkan ke satu variabel
+MANUFACTURER=$(getprop ro.product.manufacturer)
+MODEL=$(getprop ro.product.model)
+DEVICE=$MANUFACTURER-$MODEL
+
+echo "--- Laporan Sistem Termux ---"
+echo ""
+echo "Pengguna  : $(whoami)"
+echo "Tanggal   : $(date +"%A, %d %B %Y")"
+echo "Waktu     : $(date +"%H:%M:%S %Z")"
+echo "Perangkat : ${DEVICE}"
+echo "Rilis     : Termux ${TERMUX_VERSION-Unknown} ${TERMUX_APK_RELEASE-Unknown}"
+echo "Kernel    : $(uname -s -m -o)"
+echo "---------------------------"
