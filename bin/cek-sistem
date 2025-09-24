@@ -8,17 +8,25 @@ ANDROID_VERSION=$(getprop ro.build.version.release)
 
 # --- FUNGSI UTAMA ---
 check_apk_update() {
-  # Cek apakah curl sudah terpasang
-  if ! command -v curl &> /dev/null; then
-    echo "Peringatan: 'curl' tidak ditemukan. Pasang dengan 'pkg install curl' untuk mengaktifkan fungsi ini."
+  # Cek apakah curl dan jq sudah terpasang
+  if ! command -v curl &> /dev/null || ! command -v jq &> /dev/null; then
+    echo "Peringatan: 'curl' atau 'jq' tidak ditemukan."
+    echo "Pasang dengan 'pkg install curl jq' untuk mengaktifkan fungsi ini."
     return
   fi
 
-  # Ambil data rilis terbaru dari GitHub
-  LATEST_RELEASE=$(curl -s "https://api.github.com/repos/termux/termux-app/releases/latest")
+  # Ambil data rilis terbaru dari GitHub.
+  # Tambahkan opsi --fail agar curl mengembalikan kode keluar non-nol saat error HTTP.
+  LATEST_RELEASE=$(curl --fail -s "https://api.github.com/repos/termux/termux-app/releases/latest")
 
-  # Ekstrak tag versi (contoh: v0.118.0)
-  LATEST_VERSION=$(echo "$LATEST_RELEASE" | grep "tag_name" | cut -d : -f 2 | tr -d '",v ' | cut -c1-7)
+  # Cek status keberhasilan dari perintah curl sebelumnya
+  if [ $? -ne 0 ]; then
+    echo -e "\e[1;31mGagal terhubung ke internet atau mengambil data rilis.❌\e[0m"
+    return
+  fi
+
+  # Ekstrak tag versi menggunakan jq
+  LATEST_VERSION=$(echo "$LATEST_RELEASE" | jq -r '.tag_name' | sed 's/^v//')
 
   # Versi Termux saat ini yang terpasang
   CURRENT_VERSION="${TERMUX_VERSION-Unknown}"
@@ -28,9 +36,11 @@ check_apk_update() {
     echo -e "\e[1;32mVersi APK Termux sudah terbaru.\e[0m ✅"
   else
     # Jika ada versi baru, tampilkan informasinya
-    echo -e "\e[1;33mVersi baru tersedia: \e[0m"
-    echo -e "\e[1;33mVersi terbaru: $LATEST_VERSION\e[0m"
-    echo -e "Unduh dari: \e[1;34mhttps://github.com/termux/termux-app/releases/latest\e[0m"
+    echo -e "\e[1;33mVersi baru tersedia!\e[0m"
+    echo -e "Versi terbaru: \e[1;33m$LATEST_VERSION\e[0m"
+    echo -e "Versi saat ini: \e[1;33m$CURRENT_VERSION\e[0m"
+    echo -e "Unduh dari: \n- \e[1;34mhttps://github.com/termux/termux-app/releases/latest\e[0m"
+    echo -e "- \e[1;4;34mhttps://f-droid.org/en/packages/com.termux\e[0m"
   fi
 }
 
