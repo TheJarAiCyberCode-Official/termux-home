@@ -11,10 +11,14 @@ set multibuffer
 set linenumbers
 set tabstospaces
 set tabsize 2
-#set softwrap
 set constantshow
 set casesensitive
 set regexp
+set smarthome
+set matchbrackets (<[{)>]}
+#set minibar
+#set softwrap
+#set stateflags
 
 # Konfigurasi ubah shortcut
 bind ^A mark all
@@ -24,7 +28,9 @@ bind ^Y redo all
 bind ^S savefile all
 bind ^W writeout all
 bind ^/ comment main
+bind Sh-M-C comment all
 bind ^Space complete main
+bind Sh-M-V complete main
 bind ^C copy main
 bind ^V paste main
 bind ^X cut main

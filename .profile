@@ -8,7 +8,9 @@ USERNAME="$(whoami)"
 
 # Tambahkan direktori bin milik user ke PATH agar setiap script yang disimpan
 # di folder ~/bin akan bisa dijalankan hanya dengan mengetik namanya saja di terminal.
-mkdir --parent $HOME/bin
+if [ ! -d $HOME/bin/ ]; then
+    mkdir $HOME/bin
+fi
 export PATH="$HOME/bin:$PATH"
 
 # Cek apakah file indikator sudah ada. Jika belum, jalankan setup.
