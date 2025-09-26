@@ -10,15 +10,12 @@ set mouse
 set multibuffer
 set linenumbers
 set tabstospaces
-set tabsize 2
+set tabsize 4
 set constantshow
 set casesensitive
 set regexp
 set smarthome
 set matchbrackets (<[{)>]}
-#set minibar
-#set softwrap
-#set stateflags
 
 # Konfigurasi ubah shortcut
 bind ^A mark all
