@@ -160,7 +160,7 @@ echo "$(uname -s -n -r )"
 echo "$(uname -v -m -o)"
 
 echo -e "\e[30;47m Ruang Penyimpanan: \e[0m"
-df -h /data/data/com.termux/files/home
+df -h /storage/emulated
 
 echo -e "\e[30;47m Direktori User: \e[0m"
 echo "${USERDIR}"

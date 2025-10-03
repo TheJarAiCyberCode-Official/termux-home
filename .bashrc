@@ -17,8 +17,9 @@ export PS1="\[\e]0;\u@\h:\w\\a\]\[\e[1;36m\]\w\[\e[0m\] \[\e[1;33m\]\$ \[\e[0m\]
 ## --- ALIAS DASAR DAN SYSTEM ---
 # Untuk melihat daftar alias, ketik 'alias' di terminal.
 
+alias clear="reset -Q" # Membersihkan layar dan me-reset state terminal (untuk mengatasi glitch tampilan/warna).
 alias ll="ls -alhF" # Listing file dengan detail, ukuran mudah dibaca, dan penanda tipe file.
-alias cls="clear" # Membersihkan layar terminal.
+alias cls="clear" # Alias singkat untuk 'clear' (yang sudah di-reset-Q).
 alias upg="pkg update && pkg upgrade" # Update dan upgrade semua paket Termux.
 alias py="python" # Alias singkat untuk pemanggilan Python.
 
@@ -37,7 +38,6 @@ alias editnanorc="nano $HOME/.nanorc" # Edit file konfigurasi editor Nano.
 alias editbashrc="nano $HOME/.bashrc" # Edit file ini (bashrc).
 alias editprofile="nano $HOME/.profile" # Edit file konfigurasi shell utama.
 alias editmotdsh="nano $HOME/.termux/motd.sh" # Edit Message of the Day (Pesan saat Termux dibuka).
-alias edituserdir="nano $HOME/.termux/.userdir" # Edit nama direktori user default $USERDIR.
 
 ## --- ALIAS UNTUK PYTHON VIRTUAL ENVIRONMENT (VENV) ---
 # Memudahkan manajemen lingkungan terisolasi untuk pengembangan.
