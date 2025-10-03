@@ -25,11 +25,12 @@ alias py="python" # Alias singkat untuk pemanggilan Python.
 
 ## --- ALIAS UNTUK VERSION CONTROL (GIT) ---
 
-alias gclone="git clone" # Clone repository.
-alias gstatus="git status" # Cek status perubahan file.
-alias gpush="git push" # Push perubahan ke remote repository.
+alias gdd="git add" # Tambahkan file
+alias gcln="git clone" # Clone repository.
+alias gsts="git status" # Cek status perubahan file.
+alias gpsh="git push" # Push perubahan ke remote repository.
 alias gcmt="git commit" # Commit perubahan (biasanya diikuti -m "message").
-alias gconf="git config" # Konfigurasi Git.
+alias gcnf="git config" # Konfigurasi Git.
 
 ## --- ALIAS UNTUK EDIT FILE KONFIGURASI PENTING ---
 # Memudahkan akses cepat untuk mengedit file konfigurasi utama.
