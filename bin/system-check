@@ -124,47 +124,40 @@ source "/data/data/com.termux/files/usr/bin/termux-setup-package-manager" || exi
 # ================================================================================================= #
 
 # --- TAMPILAN CETAK LAPORAN ---
-echo -e "\e[30;47m --- Laporan Sistem Termux --- \e[0m"
-echo "Pengguna                  : $(whoami)"
-echo "Tanggal                   : $(date +"%A, %d %B %Y")"
-echo "Waktu                     : $(date +"%H:%M:%S %Z")"
-echo "Perangkat                 : ${DEVICE}"
-echo "Versi Android             : ${ANDROID_VERSION}"
-echo "Rilis Versi APK           : Termux ${TERMUX_VERSION-Unknown} ${TERMUX_APK_RELEASE-Unknown}"
-
-echo -e "\e[30;47m Status Versi APK Termux: \e[0m"
-check_apk_update
-
-echo -e "\e[30;47m Format paket utama Termux: \e[0m"
-echo "$TERMUX_MAIN_PACKAGE_FORMAT"
-
-echo -e "\e[30;47m Paket arsitektur CPU: \e[0m"
+echo -e "\e[1m --- Laporan Sistem Termux --- \e[0m"
+echo -e "\e[1mPengguna\e[0m                  : $(whoami)"
+echo -e "\e[1mTanggal\e[0m                   : $(date +"%A, %d %B %Y")"
+echo -e "\e[1mWaktu\e[0m                     : $(date +"%H:%M:%S %Z")"
+echo -e "\e[1mPerangkat\e[0m                 : ${DEVICE}"
+echo -e "\e[1mVersi Android\e[0m             : ${ANDROID_VERSION}"
+echo -e "\e[1mRilis Versi APK\e[0m           : Termux ${TERMUX_VERSION-Unknown} ${TERMUX_APK_RELEASE-Unknown}"
+echo -e "\e[1mFormat paket utama Termux\e[0m : $TERMUX_MAIN_PACKAGE_FORMAT"
+motd_architecture() {
 if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
   dpkg --print-architecture
 elif [ "$TERMUX_APP_PACKAGE_MANAGER" = "pacman" ]; then
   pacman-conf | grep Architecture | sed 's/Architecture = //g'
 fi
+}
+echo -e "\e[1mPaket arsitektur CPU      :\e[0m $(motd_architecture)"
 
-echo -e "\e[30;47m Repositori: \e[0m"
+echo -e "\n\e[1mStatus Versi APK Termux:\e[0m"
+check_apk_update
+echo -e "\e[1mRepositori:\e[0m"
 if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
   repo_subscriptions_apt
 elif [ "$TERMUX_APP_PACKAGE_MANAGER" = "pacman" ]; then
   repo_subscriptions_pacman
 fi
-
-echo -e "\e[30;47m Paket yang dapat diperbarui: \e[0m"
+echo -e "\e[1mPaket yang dapat diperbarui:\e[0m"
 echo "$(updates)"
 
-echo -e "\e[30;47m Kernel: \e[0m"
+echo -e "\n\e[1mKernel:\e[0m"
 echo "$(uname -s -n -r )"
 echo "$(uname -v -m -o)"
-
-echo -e "\e[30;47m Ruang Penyimpanan: \e[0m"
+echo -e "\e[1mRuang Penyimpanan:\e[0m"
 df -h /storage/emulated
-
-echo -e "\e[30;47m Direktori User: \e[0m"
+echo -e "\e[1mDirektori User:\e[0m"
 echo "${USERDIR}"
-
-echo "----------------------------------------"
 
 # ================================================================================================= #
