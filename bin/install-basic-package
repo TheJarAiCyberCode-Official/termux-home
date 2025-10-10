@@ -1,0 +1,25 @@
+#!/bin/bash
+
+pkg update && pkg upgrade
+# Install the Basic Package
+pkg install \
+	bash-completion \
+	mandoc \
+	manpages \
+	file \
+	rsync \
+	openssl \
+	openssh \
+	git \
+	perl \
+	python \
+	python-pip \
+	python-ensurepip-wheels \
+	nmap \
+	jq \
+	gnupg \
+	build-essential \
+	termux-apt-repo \
+	wget
+
+    echo -e "\e[1;32mBasic Package Install complete!\e[0m"
