@@ -51,7 +51,7 @@ if [ "$ANSWER_LOWER" == "y" ]; then
       --exclude='images' \
       --exclude='README.md' \
       --exclude='LICENSE' \
-      --exclude='install-termux-home.sh'
+      --exclude='install-termux-home.sh' \
       ./ /data/data/com.termux/files/home/
 
     if [ $? -eq 0 ]; then
