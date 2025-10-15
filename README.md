@@ -35,26 +35,14 @@ Sebelum mulai, pastikan:
 
 ## Instalasi
 
-1. Kloning repositori termux-home ke Termux Anda:
-   ```bash
-   git clone https://github.com/TheJarAiCyberCode-Official/termux-home.git
-   ```
-2. Masuk ke direktori termux-home:
-   ```bash
-   cd termux-home/
-   ```
-3. Salin semua file ke direktori `$HOME` Termux (kecuali `.git`, `images`, `LICENSE`, dan `README.md`):
-   ```bash
-   rsync -arv \
-   --exclude='.git' \
-   --exclude='images' \
-   --exclude='README.md' \
-   --exclude='LICENSE' \
-   ./ /data/data/com.termux/files/home/
-   ```
-4. Tutup sesi Termux lalu buka kembali agar konfigurasi baru diterapkan.
-   - Pada pembukaan pertama, akan ada proses setup awal sederhana.
-
++ Cara paling sederhana dan cepat bisa langsung unduh dan jalankan skrip
+[`install-termux-home.sh`](https://github.com/TheJarAiCyberCode-Official/termux-home/install-termux-home.sh) dan berikan izin eksekusi, jalankan perintah berikut di Termux:
+```bash
+wget https://thejaraicybercode-official.github.io/termux-home/install-termux-home.sh
+chmod 700 install-termux-home.sh
+```
++ Tutup sesi Termux lalu buka kembali agar konfigurasi baru diterapkan.
+  - Pada pembukaan pertama, akan ada proses setup awal sederhana.
    ![Setup Awal](images/termux-home-setup.png)
 
 ---
