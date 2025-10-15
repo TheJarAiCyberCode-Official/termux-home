@@ -38,12 +38,14 @@ Sebelum mulai, pastikan:
 + Cara paling sederhana dan cepat bisa langsung unduh skrip
 [`install-termux-home.sh`](https://github.com/TheJarAiCyberCode-Official/termux-home/install-termux-home.sh)
 dan berikan izin eksekusi, jalankan perintah berikut di Termux:
+
 ```bash
-wget https://thejaraicybercode-official.github.io/termux-home/install-termux-home.sh
-chmod 700 install-termux-home.sh
+wget https://raw.githubusercontent.com/TheJarAiCyberCode-Official/termux-home/main/install-termux-home.sh
+chmod +x install-termux-home.sh
 ```
 
 + Setelah berhasil mengunduh jalankan skrip
+
 ```bash
 ./install-termux-home.sh
 ```
