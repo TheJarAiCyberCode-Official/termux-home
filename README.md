@@ -23,10 +23,13 @@ serta meningkatkan pengalaman penggunaan Termux di Android.
 Sebelum mulai, pastikan:
 - Aplikasi [Termux](https://termux.dev/en/) sudah terpasang.
 - Perintah `git` sudah tersedia. Jika belum, jalankan:
+
   ```bash
   pkg install git
   ```
+
 - Perintah `rsync` sudah tersedia. Jika belum, jalankan:
+
   ```bash
   pkg install rsync
   ```
@@ -50,8 +53,10 @@ chmod +x install-termux-home.sh
 ./install-termux-home.sh
 ```
 
-+ Tutup sesi Termux lalu buka kembali agar konfigurasi baru diterapkan.
-  - Pada pembukaan pertama, akan ada proses setup awal sederhana.
++ Setelah itu tutup sesi Termux (`exit`) lalu buka kembali sesi yang baru, agar konfigurasi baru diterapkan.
+
+#### Pada pembukaan pertama, akan ada proses setup awal sederhana. Seperti berikut:
+
    ![Setup Awal](images/termux-home-setup.png)
 
 ---
@@ -68,6 +73,7 @@ chmod +x install-termux-home.sh
 | `.termux/motd.sh`   | Skrip untuk menampilkan pesan sambutan otomatis saat Termux dibuka.                 |
 | `usr/bin/system-check`    | Skrip bash untuk cek info sistem Termux dan lingkungan Android.               |
 | `images/`           | Folder gambar dokumentasi (tidak perlu di-copy ke $HOME).                           |
+| `install-termux-home.sh` | Skrip untuk instalasi cepat `termux-home`                                         | 
 
 ---
 
@@ -118,7 +124,7 @@ Kontribusi sangat terbuka!
 
 ---
 
-## FAQ / Troubleshooting
+## FAQ / Pemecahan Masalah
 
 **Question:** Setelah instalasi, kenapa Termux saya error atau tidak berubah?
 <br>

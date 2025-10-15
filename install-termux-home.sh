@@ -1,5 +1,6 @@
 #!/bin/bash
 
+clear
 # --- Pengecekan Dependensi ---
 if ! command -v git &> /dev/null || ! command -v rsync &> /dev/null; then
     echo "Memasang paket yang dibutuhkan: git dan rsync..."
@@ -65,7 +66,7 @@ if [ "$ANSWER_LOWER" == "y" ]; then
     # Membersihkan direktori setelah instalasi selesai (opsional)
     cd ..
     rm -rf termux-home/
-    echo "Direktori termux-home sementara telah dihapus."
+    echo "Direktori 'termux-home/' sementara telah dihapus."
 
 else
     # Memastikan direktori termux-home yang berhasil di clone terhapus saat instalasi di batalkan
