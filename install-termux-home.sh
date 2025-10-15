@@ -23,7 +23,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cd termux-home/
 echo "Kloning selesai! ✅"
 
 # --- Peringatan dan Konfirmasi ---
@@ -46,6 +45,7 @@ ANSWER_LOWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 
 if [ "$ANSWER_LOWER" == "y" ]; then
     echo "Sinkronisasi dijalankan..."
+    cd termux-home/
     rsync -arv \
       --exclude='.git' \
       --exclude='images' \
@@ -68,5 +68,7 @@ if [ "$ANSWER_LOWER" == "y" ]; then
     echo "Direktori termux-home sementara telah dihapus."
 
 else
+    # Memastikan direktori termux-home yang berhasil di clone terhapus saat instalasi di batalkan
+    rm -rf termux-home
     echo "Instalasi termux-home dibatalkan."
 fi

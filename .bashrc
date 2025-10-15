@@ -26,7 +26,7 @@ alias py="python" # Alias singkat untuk pemanggilan Python.
 ## --- ALIAS UNTUK VERSION CONTROL (GIT) ---
 
 alias gcln="git clone" # Clone repository.
-alias gdd="git add" # Tambahkan file
+alias gadd="git add --verbose" # Tambahkan file
 alias gbrnch="git branch"
 alias gsts="git status" # Cek status perubahan file.
 alias gpsh="git push" # Push perubahan ke remote repository.
