@@ -14,7 +14,7 @@ set multibuffer
 set mouse
 set regexp
 set smarthome
-set tabsize 4
+set tabsize 2
 set tabstospaces
 
 # Konfigurasi ubah shortcut (main)
