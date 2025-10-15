@@ -36,7 +36,7 @@ Sebelum mulai, pastikan:
 ## Instalasi
 
 + Cara paling sederhana dan cepat bisa langsung unduh skrip
-[`install-termux-home.sh`](https://github.com/TheJarAiCyberCode-Official/termux-home/install-termux-home.sh)
+[`install-termux-home.sh`](https://github.com/TheJarAiCyberCode-Official/termux-home/blob/main/install-termux-home.sh)
 dan berikan izin eksekusi, jalankan perintah berikut di Termux:
 
 ```bash
