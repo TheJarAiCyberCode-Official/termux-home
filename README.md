@@ -65,18 +65,18 @@ Sebelum mulai, pastikan:
 |---------------------|-------------------------------------------------------------------------------------|
 | `.bashrc`           | Konfigurasi prompt terminal, alias, dan fungsi shell.                               |
 | `.profile`          | Setup awal Termux, pembuatan direktori kerja, dsb.                                  |
-| `.nanorc`           | Pengaturan editor nano (shortcut, dsb).                                  |
+| `.nanorc`           | Pengaturan editor nano (shortcut, dsb).                                             |
 | `.termux/`          | Konfigurasi khusus aplikasi Termux.                                                 |
 | `.termux/termux.properties` | Properti aplikasi Termux, seperti kecepatan scroll dan model kursor.        |
 | `.termux/motd.sh`   | Skrip untuk menampilkan pesan sambutan otomatis saat Termux dibuka.                 |
-| `bin/system-check`    | Skrip bash untuk cek info sistem Termux dan lingkungan Android.                     |
+| `usr/bin/system-check`    | Skrip bash untuk cek info sistem Termux dan lingkungan Android.               |
 | `images/`           | Folder gambar dokumentasi (tidak perlu di-copy ke $HOME).                           |
 
 ---
 
-### Penjelasan Skrip bin/system-check
+### Penjelasan Skrip usr/bin/system-check
 
-**bin/system-check**
+**usr/bin/system-check**
 Skrip untuk menampilkan informasi sistem Termux dan perangkat Android, seperti:
 - Versi APK Termux
 - Storage (penyimpanan)
