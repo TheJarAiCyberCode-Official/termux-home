@@ -18,8 +18,8 @@ pkg install \
 	nmap \
 	jq \
 	gnupg \
+	scdaemon \
 	build-essential \
-	termux-apt-repo \
 	wget
 
-    echo -e "\e[1;32mBasic Package Install complete!\e[0m"
+  echo -e "\e[1;32mBasic Package Install complete!\e[0m"

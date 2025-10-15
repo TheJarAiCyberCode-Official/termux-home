@@ -6,13 +6,13 @@
 
 # --- KONFIGURASI PATH DAN ~/bin ---
 # Cek dan buat direktori 'bin' user jika belum ada.
-# Skrip yang disimpan di ~/bin akan bisa dijalankan langsung dari terminal.
-if [ ! -d "$HOME/bin" ]; then
-    mkdir -p "$HOME/bin"
+# Skrip yang disimpan di ~/usr/bin akan bisa dijalankan langsung dari terminal.
+if [ ! -d "$HOME/usr/bin" ]; then
+    mkdir -p "$HOME/usr/bin"
 fi
 
 # Tambahkan direktori bin user ke variabel lingkungan PATH.
-export PATH="$PATH:$HOME/bin"
+export PATH="$PATH:$HOME/usr/bin"
 
 # ============================================================================================= #
 
@@ -68,7 +68,6 @@ initial_setup_working_directory() {
         cd "$USERDIR"
     fi
 }
-
 # Jalankan fungsi setup
 initial_setup_working_directory
 
