@@ -61,19 +61,22 @@ chmod +x install-termux-home.sh
 
 ---
 
-## Struktur Direktori & Penjelasan File
+## Penjelasan Struktur Direktori & File
 
 | File/Folder         | Penjelasan Singkat                                                                  |
 |---------------------|-------------------------------------------------------------------------------------|
 | `.bashrc`           | Konfigurasi prompt terminal, alias, dan fungsi shell.                               |
 | `.profile`          | Setup awal Termux, pembuatan direktori kerja, dsb.                                  |
 | `.nanorc`           | Pengaturan editor nano (shortcut, dsb).                                             |
+| `install-termux-home.sh` | Skrip untuk instalasi cepat `termux-home`                                         | 
 | `.termux/`          | Konfigurasi khusus aplikasi Termux.                                                 |
 | `.termux/termux.properties` | Properti aplikasi Termux, seperti kecepatan scroll dan model kursor.        |
 | `.termux/motd.sh`   | Skrip untuk menampilkan pesan sambutan otomatis saat Termux dibuka.                 |
-| `usr/bin/system-check`    | Skrip bash untuk cek info sistem Termux dan lingkungan Android.               |
+| `usr/bin/`           | Menyimpan skrip yang dibuat user agar bisa dijalankan langsung dari terminal dengan mengetik namanya saja.       |
+| `usr/bin/system-check`    | Skrip Bash untuk cek info sistem Termux dan lingkungan Android.               |
+| `usr/bin/encrypted-termux-backup` | Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl |
 | `images/`           | Folder gambar dokumentasi (tidak perlu di-copy ke $HOME).                           |
-| `install-termux-home.sh` | Skrip untuk instalasi cepat `termux-home`                                         | 
+
 
 ---
 
