@@ -5,7 +5,7 @@
 # ============================================================================================= #
 
 # --- KONFIGURASI PATH DAN ~/bin ---
-# Cek dan buat direktori 'bin' user jika belum ada.
+# Cek dan buat direktori '~/usr/bin' user jika belum ada.
 # Skrip yang disimpan di ~/usr/bin akan bisa dijalankan langsung dari terminal.
 if [ ! -d "$HOME/usr/bin" ]; then
     mkdir -p "$HOME/usr/bin"
