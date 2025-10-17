@@ -14,7 +14,7 @@ set multibuffer
 set mouse
 set regexp
 set smarthome
-set tabsize 2
+set tabsize 4
 set tabstospaces
 
 # Konfigurasi ubah shortcut (main)
@@ -27,10 +27,10 @@ bind ^R replace main
 bind ^T gotoline main
 bind ^V paste main
 bind ^W writeout main
-bind ^X cut main
-bind ^Y redo main
-bind ^Z undo main
-bind ^/ comment main
+bind ^X cut all
+bind ^Y redo all
+bind ^Z undo all
+bind ^/ comment all
 bind ^Space complete main
 
 # Konfigurasi ubah shortcut (all)
