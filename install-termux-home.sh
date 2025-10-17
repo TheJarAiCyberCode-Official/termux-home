@@ -36,8 +36,7 @@ echo '~/.bashrc
 ~/.termux/motd.sh
 ~/.termux/termux.properties
 ~/usr/bin/system-check
-~/usr/bin/encrypted-termux-backup
-~/usr/bin/install-basic-package'
+~/usr/bin/encrypted-termux-backup'
 echo "Pastikan anda sudah mencadangkan-nya (backup) sebelum melanjutkan!"
 echo ""
 
