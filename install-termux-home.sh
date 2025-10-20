@@ -25,6 +25,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Kloning selesai! ✅"
+cd termux-home/
 
 # --- Peringatan dan Konfirmasi ---
 echo ""
@@ -46,7 +47,6 @@ ANSWER_LOWER=$(echo "$ANSWER" | tr '[:upper:]' '[:lower:]')
 
 if [ "$ANSWER_LOWER" == "y" ]; then
     echo "Sinkronisasi dijalankan..."
-    cd termux-home/
     rsync -arv \
       --exclude='.git' \
       --exclude='images' \
