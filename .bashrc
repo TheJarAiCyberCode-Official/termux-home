@@ -53,3 +53,5 @@ alias bye="deactivate" # Keluar/menonaktifkan Venv.
 
 alias resetuserdir="rm $HOME/.termux/.initialized && source $HOME/.profile"
 # ============================================================================================= #
+
+export GPG_TTY=$(tty)

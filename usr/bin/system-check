@@ -124,6 +124,7 @@ source "/data/data/com.termux/files/usr/bin/termux-setup-package-manager" || exi
 # ================================================================================================= #
 
 # --- TAMPILAN CETAK LAPORAN ---
+clear
 echo -e "\e[1m --- Laporan Sistem Termux --- \e[0m"
 echo -e "\e[1mPengguna\e[0m                  : $(whoami)"
 echo -e "\e[1mTanggal\e[0m                   : $(date +"%A, %d %B %Y")"
