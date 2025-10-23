@@ -58,6 +58,7 @@ tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY/" \
     --exclude='./home/.gnupg/S.gpg-agent.extra' \
     --exclude='./home/.gnupg/S.gpg-agent.ssh' \
     --exclude='./home/.gnupg/S.scdaemon' \
+    --exclude='./home/.gnupg/S.keyboxd' \
     --exclude='./home/.ssh/agent' \
     --exclude='./home/.cache' \
     --exclude='./home/.bash_history' \
