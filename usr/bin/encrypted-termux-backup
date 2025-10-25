@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# encrypted-termux-backup.sh
+# encrypted-termux-backup
 # Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl
 
 clear
