@@ -1,0 +1,117 @@
+#!/bin/bash
+
+# encrypted-termux-backup
+# Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl
+
+clear
+
+# --- VARIABEL PENTING ---
+BACKUP_DIR="/sdcard/termux"
+# Menggunakan format ISO 8601 untuk timestamp
+TIMESTAMP=$(date +%Y-%m-%d_%H%M%S)
+BACKUP_FILENAME="termux-backup-${TIMESTAMP}.tar.gz"
+BACKUP_FILE="$BACKUP_DIR/$BACKUP_FILENAME"
+RESERVED_DIRECTORY="/data/data/com.termux/files"
+
+# --- FUNGSI CEK DAN INSTALL DEPENDENSI ---
+check_and_install_deps() {
+    if ! command -v openssl &> /dev/null || ! command -v tar &> /dev/null; then
+        echo "Memasang paket yang dibutuhkan: openssl-tool dan tar..."
+        pkg update -y
+        pkg install openssl-tool tar -y
+        if [ $? -ne 0 ]; then
+            echo -e "\e[1;31m❌ Gagal menginstal paket. Cek koneksi internet.\e[0m"
+            exit 1
+        fi
+    fi
+}
+
+# --- PENGECEKAN IZIN PENYIMPANAN TERMUX (KRITIS) ---
+if [ ! -d "/sdcard" ]; then
+    echo -e "\e[1;33m⚠️ Peringatan: Izin penyimpanan belum diatur.\e[0m"
+    echo "Jalankan \e[1;36mtermux-setup-storage\e[0m terlebih dahulu dan ulangi skrip ini."
+    exit 1
+fi
+
+# --- PENGECEKAN & PEMBUATAN DIREKTORI BACKUP ---
+if [ ! -d "$BACKUP_DIR" ]; then
+    echo "Direktori $BACKUP_DIR tidak ditemukan. Membuat direktori..."
+    mkdir -p "$BACKUP_DIR"
+    if [ $? -ne 0 ]; then
+        echo -e "\e[1;31m❌ Gagal membuat direktori $BACKUP_DIR. Cek izin.\e[0m"
+        exit 1
+    fi
+fi
+
+# Pengecekan dan Install Dependensi
+check_and_install_deps
+
+# --- PROSES PENCADANGAN ---
+echo "Memulai mencadangkan Termux..."
+echo -e "\e[1mSumber:\e[0m $RESERVED_DIRECTORY/ './usr' './home'"
+echo -e "\e[1mTujuan:\e[0m $BACKUP_DIR"
+echo "tunggu sebentar yaa... :)"
+
+tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY/" \
+    --exclude='./home/.gnupg/S.gpg-agent' \
+    --exclude='./home/.gnupg/S.gpg-agent.browser' \
+    --exclude='./home/.gnupg/S.gpg-agent.extra' \
+    --exclude='./home/.gnupg/S.gpg-agent.ssh' \
+    --exclude='./home/.gnupg/S.scdaemon' \
+    --exclude='./home/.gnupg/S.keyboxd' \
+    --exclude='./home/.ssh/agent' \
+    --exclude='./home/.cache' \
+    --exclude='./home/.bash_history' \
+    --exclude='./home/.python_history' \
+    --exclude='./home/.lessht' \
+    --exclude='./home/.wget-hsts' \
+    ./usr ./home
+
+if [ $? -eq 0 ]; then
+    echo -e "✅ Pencadangan Termux berhasil dibuat: \e[1;32m$BACKUP_FILENAME\e[0m"
+    echo ""
+
+    # Membuat file sha256sum untuk pengecekan keutuhan data backup asli (.tar.gz)
+    SHA256_FILE="${BACKUP_FILE}.sha256"
+    sha256sum "$BACKUP_FILE" > "$SHA256_FILE"
+    echo "Membuat file SHA256 untuk verifikasi: $SHA256_FILE"
+
+    # --- PROSES ENKRIPSI ---
+    echo ""
+    echo -e "\e[1;36m🔔 Perhatian: Masukkan PASSWORD ENKRIPSI yang KUAT.\e[0m"
+    echo "Password ini akan diminta lagi saat dekripsi."
+
+    ENCRYPTED_FILE="${BACKUP_FILE}.enc"
+
+    # Perintah Enkripsi
+    openssl enc -e -aes-256-cbc -salt -pbkdf2 -in "$BACKUP_FILE" -out "$ENCRYPTED_FILE"
+
+    if [ $? -eq 0 ]; then
+        echo -e "✅ Enkripsi Selesai! File terenkripsi:"
+        echo -e "\e[1;32m$ENCRYPTED_FILE 🔐\e[0m"
+
+        # --- OPSI PENGHAPUSAN FILE ASLI ---
+        echo ""
+        read -r -p "Apakah Anda ingin menghapus file backup asli TIDAK terenkripsi? (y/n): " DELETE_ANSWER
+        DELETE_ANSWER_LOWER=$(echo "$DELETE_ANSWER" | tr '[:upper:]' '[:lower:]')
+
+        if [ "$DELETE_ANSWER_LOWER" == "y" ]; then
+            rm "$BACKUP_FILE"
+            echo -e "\e[1;32mFile backup asli ($BACKUP_FILENAME) telah dihapus untuk keamanan.\e[0m"
+        else
+          echo -e "\e[1;33m⚠️ Peringatan: File backup asli ($BACKUP_FILENAME)\e[0m"
+          echo -e "\e[1;33mMasih ada dan TIDAK terenkripsi. Amankan atau hapus secara manual.\e[0m"
+        fi
+
+    else
+        echo -e "\e[1;31m❌ Enkripsi gagal. Periksa kembali openssl,\e[0m"
+        echo -e "\e[1;31matau pastikan password telah dimasukkan dengan benar.\e[0m"
+    fi
+
+else
+    echo -e "\e[1;31m❌ Pencadangan (tar) gagal. Cek izin Termux,\e[0m"
+    echo -e "\e[1;31mapakah direktori './usr' dan './home' benar-benar ada dan dapat diakses.\e[0m"
+fi
+
+echo ""
+echo "Proses Backup dan Enkripsi selesai!"

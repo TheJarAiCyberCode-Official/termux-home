@@ -1,0 +1,164 @@
+#!/bin/bash
+
+# ================================================================================================= #
+
+# --- VARIBEL SISTEM ---
+MANUFACTURER=$(getprop ro.product.manufacturer)
+MODEL=$(getprop ro.product.model)
+DEVICE="${MANUFACTURER}-${MODEL}"
+ANDROID_VERSION=$(getprop ro.build.version.release)
+
+# ================================================================================================= #
+
+# --- FUNGSI UTAMA ---
+check_apk_update() {
+  # Cek apakah curl dan jq sudah terpasang
+  if ! command -v curl &> /dev/null || ! command -v jq &> /dev/null; then
+    echo -e "\e[1;31mPeringatan: 'curl' atau 'jq' tidak ditemukan.\e[0m"
+    echo -e "Pasang dengan '\e[1;33mpkg install curl jq\e[0m' untuk mengaktifkan fungsi ini."
+    return
+  fi
+
+  # Ambil data rilis terbaru dari GitHub.
+  # Tambahkan opsi --fail agar curl mengembalikan kode keluar non-nol saat error HTTP.
+  LATEST_RELEASE=$(curl --fail -s "https://api.github.com/repos/termux/termux-app/releases/latest")
+
+  # Cek status keberhasilan dari perintah curl sebelumnya
+  if [ $? -ne 0 ]; then
+    echo -e "\e[1;31mGagal terhubung ke internet atau mengambil data rilis.\e[0m"
+    return
+  fi
+
+  # Ekstrak tag versi menggunakan jq
+  LATEST_VERSION=$(echo "$LATEST_RELEASE" | jq -r '.tag_name' | sed 's/^v//')
+
+  # Versi Termux saat ini yang terpasang
+  CURRENT_VERSION="${TERMUX_VERSION-Unknown}"
+
+  # Bandingkan versi
+  if [[ "$LATEST_VERSION" == "$CURRENT_VERSION" ]]; then
+    echo -e "\e[1;32mThe Termux APK version is the latest.\e[0m ✅"
+  else
+    # Jika ada versi baru, tampilkan informasinya
+    echo -e "\e[1;33mVersi baru tersedia!\e[0m"
+    echo -e "Versi terbaru: \e[1;33m$LATEST_VERSION\e[0m"
+    echo -e "Versi saat ini: \e[1;33m$CURRENT_VERSION\e[0m"
+    echo -e "Unduh dari: \n- \e[1;34mhttps://github.com/termux/termux-app/releases/latest\e[0m"
+    echo -e "- \e[1;4;34mhttps://f-droid.org/en/packages/com.termux\e[0m"
+  fi
+}
+
+updates() {
+  local updatable
+
+  if [ "$(id -u)" = "0" ]; then
+    echo "Berjalan sebagai root. Tidak dapat memeriksa pembaruan paket."
+  else
+    if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
+      apt update >/dev/null 2>&1
+      updatable=$(apt list --upgradable 2>/dev/null | tail -n +2)
+    elif [ "$TERMUX_APP_PACKAGE_MANAGER" = "pacman" ]; then
+      pacman -Sy >/dev/null 2>&1
+      updatable=$(pacman -Qu)
+    fi
+
+    if [ -z "$updatable" ]; then
+      echo -e "\e[1;32mAll packages up to date\e[0m ✅"
+    else
+      echo -e "\e[1;33m$updatable\e[0m"
+    fi
+  fi
+}
+
+# ================================================================================================= #
+
+# --- FUNGSI REPO ---
+repo_subscriptions_apt() {
+  local main_sources
+  main_sources=$(grep -E '^[[:space:]]*deb[[:space:]]' "/data/data/com.termux/files/usr/etc/apt/sources.list")
+
+  if [ -n "$main_sources" ]; then
+    echo "# sources.list"
+    echo "$main_sources"
+  fi
+
+  if [ -d "/data/data/com.termux/files/usr/etc/apt/sources.list.d" ]; then
+    local filename repo_package supl_sources
+    while read -r filename; do
+      repo_package=$(dpkg -S "$filename" 2>/dev/null | cut -d : -f 1)
+      supl_sources=$(grep -E '^[[:space:]]*deb[[:space:]]' "$filename")
+
+      if [ -n "$supl_sources" ]; then
+        if [ -n "$repo_package" ]; then
+          echo "# $repo_package (sources.list.d/$(basename "$filename"))"
+        else
+          echo "# sources.list.d/$(basename "$filename")"
+        fi
+        echo "$supl_sources"
+      fi
+    done < <(find "/data/data/com.termux/files/usr/etc/apt/sources.list.d" -maxdepth 1 ! -type d)
+  fi
+}
+
+repo_subscriptions_pacman() {
+  local conf
+  conf="/data/data/com.termux/files/usr/etc/pacman.conf"
+
+  if [[ -f $conf ]]; then
+    echo "# $conf"
+    for i in $(pacman-conf -l); do
+      echo "[$i]"
+      pacman-conf -r "$i"
+    done
+  else
+    echo "$conf file not found"
+  fi
+}
+
+# ================================================================================================= #
+
+# --- PENGATURAN AWAL ---
+# Setup TERMUX_APP_PACKAGE_MANAGER
+source "/data/data/com.termux/files/usr/bin/termux-setup-package-manager" || exit 1
+
+# ================================================================================================= #
+
+# --- TAMPILAN CETAK LAPORAN ---
+clear
+echo -e "\e[1m --- Laporan Sistem Termux --- \e[0m"
+echo -e "\e[1mPengguna\e[0m                  : $(whoami)"
+echo -e "\e[1mTanggal\e[0m                   : $(date +"%A, %d %B %Y")"
+echo -e "\e[1mWaktu\e[0m                     : $(date +"%H:%M:%S %Z")"
+echo -e "\e[1mPerangkat\e[0m                 : ${DEVICE}"
+echo -e "\e[1mVersi Android\e[0m             : ${ANDROID_VERSION}"
+echo -e "\e[1mRilis Versi APK\e[0m           : Termux ${TERMUX_VERSION-Unknown} ${TERMUX_APK_RELEASE-Unknown}"
+echo -e "\e[1mFormat paket utama Termux\e[0m : $TERMUX_MAIN_PACKAGE_FORMAT"
+motd_architecture() {
+if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
+  dpkg --print-architecture
+elif [ "$TERMUX_APP_PACKAGE_MANAGER" = "pacman" ]; then
+  pacman-conf | grep Architecture | sed 's/Architecture = //g'
+fi
+}
+echo -e "\e[1mPaket arsitektur CPU      :\e[0m $(motd_architecture)"
+
+echo -e "\n\e[1mStatus Versi APK Termux:\e[0m"
+check_apk_update
+echo -e "\e[1mRepositori:\e[0m"
+if [ "$TERMUX_APP_PACKAGE_MANAGER" = "apt" ]; then
+  repo_subscriptions_apt
+elif [ "$TERMUX_APP_PACKAGE_MANAGER" = "pacman" ]; then
+  repo_subscriptions_pacman
+fi
+echo -e "\e[1mPaket yang dapat diperbarui:\e[0m"
+echo "$(updates)"
+
+echo -e "\n\e[1mKernel:\e[0m"
+echo "$(uname -s -n -r )"
+echo "$(uname -v -m -o)"
+echo -e "\e[1mRuang Penyimpanan:\e[0m"
+df -h /storage/emulated
+echo -e "\e[1mDirektori User:\e[0m"
+echo "${USERDIR}"
+
+# ================================================================================================= #
