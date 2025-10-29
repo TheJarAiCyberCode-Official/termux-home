@@ -52,7 +52,7 @@ echo -e "\e[1mSumber:\e[0m $RESERVED_DIRECTORY/ './usr' './home'"
 echo -e "\e[1mTujuan:\e[0m $BACKUP_DIR"
 echo "tunggu sebentar yaa... :)"
 
-tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY/" \
+tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY" \
     --exclude='./home/.gnupg/S.gpg-agent' \
     --exclude='./home/.gnupg/S.gpg-agent.browser' \
     --exclude='./home/.gnupg/S.gpg-agent.extra' \
@@ -68,30 +68,27 @@ tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY/" \
     ./usr ./home
 
 if [ $? -eq 0 ]; then
-    echo -e "✅ Pencadangan Termux berhasil dibuat: \e[1;32m$BACKUP_FILENAME\e[0m"
-    echo ""
-
-    # Membuat file sha256sum untuk pengecekan keutuhan data backup asli (.tar.gz)
-    SHA256_FILE="${BACKUP_FILE}.sha256"
-    sha256sum "$BACKUP_FILE" > "$SHA256_FILE"
-    echo "Membuat file SHA256 untuk verifikasi: $SHA256_FILE"
+    echo -e "\n✅ Pencadangan Termux berhasil dibuat: \e[1;32m$BACKUP_FILENAME\e[0m"
 
     # --- PROSES ENKRIPSI ---
-    echo ""
-    echo -e "\e[1;36m🔔 Perhatian: Masukkan PASSWORD ENKRIPSI yang KUAT.\e[0m"
+    echo -e "\n\e[1;36m🔔 Perhatian: Masukkan PASSWORD ENKRIPSI yang KUAT.\e[0m"
     echo "Password ini akan diminta lagi saat dekripsi."
 
     ENCRYPTED_FILE="${BACKUP_FILE}.enc"
 
     # Perintah Enkripsi
-    openssl enc -e -aes-256-cbc -salt -pbkdf2 -in "$BACKUP_FILE" -out "$ENCRYPTED_FILE"
+    openssl enc -e -aes-256-cbc -pbkdf2 -in "$BACKUP_FILE" -out "$ENCRYPTED_FILE"
 
     if [ $? -eq 0 ]; then
-        echo -e "✅ Enkripsi Selesai! File terenkripsi:"
-        echo -e "\e[1;32m$ENCRYPTED_FILE 🔐\e[0m"
+        # Membuat file sha256sum untuk file terenkripsi (.enc)
+        SHA256_FILE="${ENCRYPTED_FILE}.sha256"
+        sha256sum "$ENCRYPTED_FILE" > "$SHA256_FILE"
+        echo "Membuat file SHA256 untuk verifikasi file terenkripsi: $SHA256_FILE"
+
+        echo -e "\n✅ Enkripsi Selesai! File terenkripsi:"
+        echo -e "\e[1;32m$ENCRYPTED_FILE 🔐\e[0m\n"
 
         # --- OPSI PENGHAPUSAN FILE ASLI ---
-        echo ""
         read -r -p "Apakah Anda ingin menghapus file backup asli TIDAK terenkripsi? (y/n): " DELETE_ANSWER
         DELETE_ANSWER_LOWER=$(echo "$DELETE_ANSWER" | tr '[:upper:]' '[:lower:]')
 
@@ -113,5 +110,10 @@ else
     echo -e "\e[1;31mapakah direktori './usr' dan './home' benar-benar ada dan dapat diakses.\e[0m"
 fi
 
-echo ""
-echo "Proses Backup dan Enkripsi selesai!"
+echo -e "\nProses Backup dan Enkripsi selesai!"
+
+# Note: Pada saat mendekripsi dan memulihkan data backup, gunakan perintah berikut ini:
+# openssl enc -d -aes-256-cbc -pbkdf2 -in </sdcard/termux/nama-file-backup.tar.gz.enc> -out </sdcard/termux/nama-file-backup.tar.gz>
+# tar -xzvf </sdcard/termux/nama-file-backup.tar.gz> -C /data/data/com.termux/files/ ./usr ./home --recursive-unlink --preserve-permissions
+
+# setelah itu tutup Termux dengan tombol "keluar" dari notifikasi dan buka lagi sesi baru.
