@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# encrypted-termux-backup
+# backup-termux-encrypted
 # Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl
 
 clear
 
-# --- VARIABEL PENTING ---
+# --- VARIABEL UTAMA PENTING ---
 BACKUP_DIR="/sdcard/termux"
-# Menggunakan format ISO 8601 untuk timestamp
 TIMESTAMP=$(date +%Y-%m-%d_%H%M%S)
 BACKUP_FILENAME="termux-backup-${TIMESTAMP}.tar.gz"
 BACKUP_FILE="$BACKUP_DIR/$BACKUP_FILENAME"
@@ -50,7 +49,7 @@ check_and_install_deps
 echo "Memulai mencadangkan Termux..."
 echo -e "\e[1mSumber:\e[0m $RESERVED_DIRECTORY/ './usr' './home'"
 echo -e "\e[1mTujuan:\e[0m $BACKUP_DIR"
-echo "tunggu sebentar yaa... :)"
+echo "tunggu sebentar yaa... :) "
 
 tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY" \
     --exclude='./home/.gnupg/S.gpg-agent' \
@@ -83,10 +82,9 @@ if [ $? -eq 0 ]; then
         # Membuat file sha256sum untuk file terenkripsi (.enc)
         SHA256_FILE="${ENCRYPTED_FILE}.sha256"
         sha256sum "$ENCRYPTED_FILE" > "$SHA256_FILE"
-        echo "Membuat file SHA256 untuk verifikasi file terenkripsi: $SHA256_FILE"
+        echo -e "Membuat file SHA256 untuk verifikasi file terenkripsi: \n\e[1;32m$SHA256_FILE\e[0m"
 
-        echo -e "\n✅ Enkripsi Selesai! File terenkripsi:"
-        echo -e "\e[1;32m$ENCRYPTED_FILE 🔐\e[0m\n"
+        echo -e "\n✅ Enkripsi Selesai! File terenkripsi: \n\e[1;32m$ENCRYPTED_FILE 🔐\e[0m\n"
 
         # --- OPSI PENGHAPUSAN FILE ASLI ---
         read -r -p "Apakah Anda ingin menghapus file backup asli TIDAK terenkripsi? (y/n): " DELETE_ANSWER
@@ -94,20 +92,21 @@ if [ $? -eq 0 ]; then
 
         if [ "$DELETE_ANSWER_LOWER" == "y" ]; then
             rm "$BACKUP_FILE"
-            echo -e "\e[1;32mFile backup asli ($BACKUP_FILENAME) telah dihapus untuk keamanan.\e[0m"
+            echo -e "File backup asli \e[1;32m$BACKUP_FILENAME\e[0m telah dihapus untuk keamanan."
         else
-          echo -e "\e[1;33m⚠️ Peringatan: File backup asli ($BACKUP_FILENAME)\e[0m"
+          echo -e "\e[1;33mPeringatan: File backup asli ($BACKUP_FILENAME)\e[0m"
           echo -e "\e[1;33mMasih ada dan TIDAK terenkripsi. Amankan atau hapus secara manual.\e[0m"
         fi
 
     else
-        echo -e "\e[1;31m❌ Enkripsi gagal. Periksa kembali openssl,\e[0m"
-        echo -e "\e[1;31matau pastikan password telah dimasukkan dengan benar.\e[0m"
+        echo -e "\e[1;31mEnkripsi gagal!\e[0m Periksa kembali openssl,"
+        echo "atau pastikan password telah dimasukkan dengan benar."
     fi
 
 else
-    echo -e "\e[1;31m❌ Pencadangan (tar) gagal. Cek izin Termux,\e[0m"
-    echo -e "\e[1;31mapakah direktori './usr' dan './home' benar-benar ada dan dapat diakses.\e[0m"
+    echo -e "\e[1;31mPencadangan gagal!\e[0m Cek kembali izin Termux atau,"
+    echo -e "pastikan direktori sumber $RESERVED_DIRECTORY \e[1;33m'./usr' './home'\e[0m"
+    echo "benar-benar ada dan dapat diakses."
 fi
 
 echo -e "\nProses Backup dan Enkripsi selesai!"
