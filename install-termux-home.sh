@@ -1,6 +1,7 @@
 #!/bin/bash
 
 clear
+
 # --- Pengecekan Dependensi ---
 if ! command -v git &> /dev/null || ! command -v rsync &> /dev/null; then
     echo "Memasang paket yang dibutuhkan: git dan rsync..."
@@ -28,18 +29,17 @@ echo "Kloning selesai! ✅"
 cd termux-home/
 
 # --- Peringatan dan Konfirmasi ---
-echo ""
-echo "Memulai instalasi termux-home..."
+echo -e "\nMemulai instalasi termux-home..."
 echo -e "\e[1;33mPeringatan! Proses instalasi ini akan menimpa file berikut jika ada:\e[0m"
 echo '~/.bashrc
+~/.bash_aliases
 ~/.nanorc
 ~/.profile
 ~/.termux/motd.sh
 ~/.termux/termux.properties
 ~/usr/bin/system-check
-~/usr/bin/encrypted-termux-backup'
-echo "Pastikan anda sudah mencadangkan-nya (backup) sebelum melanjutkan!"
-echo ""
+~/usr/bin/backup-termux-encrypted'
+echo -e "Pastikan anda sudah mencadangkan-nya (backup) sebelum melanjutkan!\n"
 
 read -p "Apakah ingin tetap melanjutkan? (y/n) " ANSWER
 # Konversi input ke huruf kecil untuk penanganan 'y' atau 'Y'
