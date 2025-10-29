@@ -71,7 +71,7 @@ chmod +x install-termux-home.sh
 | `.termux/motd.sh`                 | Skrip untuk menampilkan pesan sambutan otomatis saat Termux dibuka.                            |
 | `usr/bin/`                        | Simpan skrip yang dibuat user, dijalankan langsung dari terminal dengan mengetik namanya saja. |
 | `usr/bin/system-check`            | Skrip Bash untuk cek info sistem Termux dan lingkungan Android.                                |
-| `usr/bin/encrypted-termux-backup` | Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl                   |
+| `usr/bin/backup-termux-encrypted` | Skrip Bash untuk mencadangkan data Termux dan dienkripsi menggunakan openssl                   |
 | `images/`                         | Folder gambar dokumentasi (tidak perlu di-copy ke $HOME).                                      |
 
 
