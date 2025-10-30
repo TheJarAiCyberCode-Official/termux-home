@@ -26,9 +26,10 @@ check_and_install_deps() {
 }
 
 # --- PENGECEKAN IZIN PENYIMPANAN TERMUX (KRITIS) ---
-if [ ! -d "/sdcard" ]; then
+CHECK_STORAGE=$(ls /sdcard 2>&1 | grep "Permission denied" | awk -F': ' '{print $NF}')
+if [ "$CHECK_STORAGE" == "Permission denied" ]; then
     echo -e "\e[1;33m⚠️ Peringatan: Izin penyimpanan belum diatur.\e[0m"
-    echo "Jalankan \e[1;36mtermux-setup-storage\e[0m terlebih dahulu dan ulangi skrip ini."
+    echo -e "Jalankan \e[1;34mtermux-setup-storage\e[0m terlebih dahulu dan ulangi skrip ini."
     exit 1
 fi
 
@@ -69,39 +70,60 @@ tar -czPf "$BACKUP_FILE" -C "$RESERVED_DIRECTORY" \
 if [ $? -eq 0 ]; then
     echo -e "\n✅ Pencadangan Termux berhasil dibuat: \e[1;32m$BACKUP_FILENAME\e[0m"
 
-    # --- PROSES ENKRIPSI ---
+    # --- PROSES ENKRIPSI DENGAN PENGULANGAN ---
     echo -e "\n\e[1;36m🔔 Perhatian: Masukkan PASSWORD ENKRIPSI yang KUAT.\e[0m"
-    echo "Password ini akan diminta lagi saat dekripsi."
+    echo "Password ini akan diminta lagi saat dekripsi. Jika gagal, akan diulang."
 
     ENCRYPTED_FILE="${BACKUP_FILE}.enc"
+    ENCRYPTION_ATTEMPTS=0
+    MAX_ATTEMPTS=3 # Batas percobaan, opsional
 
-    # Perintah Enkripsi
-    openssl enc -e -aes-256-cbc -pbkdf2 -in "$BACKUP_FILE" -out "$ENCRYPTED_FILE"
+    # Loop ini akan terus berjalan SELAMA openssl GAGAL (kode keluar BUKAN 0)
+    while ! openssl enc -e -aes-256-cbc -pbkdf2 -in "$BACKUP_FILE" -out "$ENCRYPTED_FILE"; do
+        ENCRYPTION_ATTEMPTS=$((ENCRYPTION_ATTEMPTS + 1))
+        echo -e "\n\e[1;31mEnkripsi GAGAL (Percobaan ke-$ENCRYPTION_ATTEMPTS)!\e[0m"
+        echo "Mungkin password yang dimasukkan saat verifikasi berbeda."
 
-    if [ $? -eq 0 ]; then
-        # Membuat file sha256sum untuk file terenkripsi (.enc)
-        SHA256_FILE="${ENCRYPTED_FILE}.sha256"
-        sha256sum "$ENCRYPTED_FILE" > "$SHA256_FILE"
-        echo -e "Membuat file SHA256 untuk verifikasi file terenkripsi: \n\e[1;32m$SHA256_FILE\e[0m"
-
-        echo -e "\n✅ Enkripsi Selesai! File terenkripsi: \n\e[1;32m$ENCRYPTED_FILE 🔐\e[0m\n"
-
-        # --- OPSI PENGHAPUSAN FILE ASLI ---
-        read -r -p "Apakah Anda ingin menghapus file backup asli TIDAK terenkripsi? (y/n): " DELETE_ANSWER
-        DELETE_ANSWER_LOWER=$(echo "$DELETE_ANSWER" | tr '[:upper:]' '[:lower:]')
-
-        if [ "$DELETE_ANSWER_LOWER" == "y" ]; then
-            rm "$BACKUP_FILE"
-            echo -e "File backup asli \e[1;32m$BACKUP_FILENAME\e[0m telah dihapus untuk keamanan."
-        else
-          echo -e "\e[1;33mPeringatan: File backup asli ($BACKUP_FILENAME)\e[0m"
-          echo -e "\e[1;33mMasih ada dan TIDAK terenkripsi. Amankan atau hapus secara manual.\e[0m"
+        # Batasi percobaan (opsional)
+        if [ $ENCRYPTION_ATTEMPTS -ge $MAX_ATTEMPTS ]; then
+            echo -e "\e[1;31mGagal enkripsi setelah $MAX_ATTEMPTS kali percobaan. Menghentikan skrip.\e[0m"
+            echo -e "File backup TIDAK terenkripsi masih ada: \e[1;33m$BACKUP_FILE\e[0m"
+            exit 1
         fi
 
+        echo -e "\e[1;33mMengulang perintah enkripsi...\e[0m"
+        # Menghapus file .enc yang mungkin sebagian dibuat jika gagal agar bersih
+        rm -f "$ENCRYPTED_FILE"
+
+    done
+    # --- AKHIR PROSES ENKRIPSI DENGAN PENGULANGAN ---
+
+    # Jika loop while berhasil keluar, artinya enkripsi sukses
+    echo -e "\n✅ Enkripsi BERHASIL setelah $ENCRYPTION_ATTEMPTS kali percobaan! File terenkripsi: \n\e[1;32m$ENCRYPTED_FILE 🔐\e[0m"
+
+    # Membuat file sha256sum untuk file terenkripsi (.enc)
+    SHA256_FILE="${ENCRYPTED_FILE}.sha256"
+    sha256sum "$ENCRYPTED_FILE" > "$SHA256_FILE"
+    echo -e "Membuat file SHA256 untuk verifikasi: \n\e[1;32m$SHA256_FILE\e[0m"
+
+    # --- OPSI PENGHAPUSAN FILE ASLI SECARA AMAN ---
+    read -r -p "Apakah Anda ingin menghapus file backup asli TIDAK terenkripsi? (y/n): " DELETE_ANSWER
+    DELETE_ANSWER_LOWER=$(echo "$DELETE_ANSWER" | tr '[:upper:]' '[:lower:]')
+
+    if [ "$DELETE_ANSWER_LOWER" == "y" ]; then
+        echo "menghapus file backup asli..."
+        echo -e "\e[1;35mshred -zuf\e[0m $BACKUP_FILE (Secure Deletion)..."
+        # shred (Secure Deletion)
+        # untuk menimpa (overwrite) data file berulang kali (standarnya 3 kali)
+        # dengan pola acak sebelum akhirnya menghapus file tersebut.
+        # Ini membuat data sangat sulit atau mungkin mustahil untuk dipulihkan.
+        shred -zuf "$BACKUP_FILE"
+        echo -e "File backup asli \e[1;32m$BACKUP_FILENAME\e[0m telah dihapus secara aman."
     else
-        echo -e "\e[1;31mEnkripsi gagal!\e[0m Periksa kembali openssl,"
-        echo "atau pastikan password telah dimasukkan dengan benar."
+      echo -e "\e[1;33mPeringatan: File backup asli ($BACKUP_FILENAME)\e[0m"
+      echo -e "\e[1;33mMasih ada dan TIDAK terenkripsi. Amankan atau hapus secara manual.\e[0m"
     fi
+
 
 else
     echo -e "\e[1;31mPencadangan gagal!\e[0m Cek kembali izin Termux atau,"
