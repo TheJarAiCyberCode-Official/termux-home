@@ -6,10 +6,10 @@ clear
 if ! command -v git &> /dev/null || ! command -v rsync &> /dev/null; then
     echo "Memasang paket yang dibutuhkan: git dan rsync..."
     # Memastikan Termux sudah di-update
-    pkg update -y
+    pkg update && upgrade -y
     pkg install git rsync -y
     if [ $? -ne 0 ]; then
-        echo -e "\e[1;31m❌ Gagal menginstal paket 'git' atau 'rsync'. Silakan instal manual atau periksa koneksi internet.\e[0m"
+        echo -e "\e[1;31m Gagal menginstal paket!\e[0m Silakan instal manual atau periksa koneksi internet."
         exit 1
     fi
 fi
@@ -21,7 +21,6 @@ git clone $URL_GIT
 
 # Pengecekan keberhasilan kloning
 if [ $? -ne 0 ]; then
-    echo -e "\e[1;31m❌ Kloning gagal. Periksa koneksi internet atau status 'git'.\e[0m"
     exit 1
 fi
 
@@ -60,7 +59,7 @@ if [ "$ANSWER_LOWER" == "y" ]; then
         echo "Untuk menerapkan perubahan, silakan keluar ('exit')"
         echo "dan buka kembali sesi termux yang baru."
     else
-        echo -e "\e[1;31m❌ Sinkronisasi (rsync) gagal. Mungkin ada masalah izin (permission).\e[0m"
+        echo -e "\e[1;31mSinkronisasi (rsync) gagal!\e[0m Mungkin ada masalah izin (permission)."
     fi
 
     # Membersihkan direktori setelah instalasi selesai (opsional)
