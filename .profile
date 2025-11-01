@@ -46,7 +46,6 @@ initial_setup_working_directory() {
         local USERDIR_BASE_NAME=$(cat "$USERDIR_NAME_FILE")
         # Export variabel lingkungan global untuk path direktori kerja user
         export USERDIR="$HOME/${USERDIR_BASE_NAME}"
-        # Pindah direktori (cd) ke path yang telah ditentukan user
         cd "$USERDIR"
     fi
 }
@@ -54,9 +53,7 @@ initial_setup_working_directory() {
 initial_setup_working_directory
 
 # --- PENANGANAN ERROR (JIKA DIREKTORI USER HILANG/DIHAPUS) ---
-# Cek apakah $USERDIR benar-benar ada setelah proses setup/pembacaan.
 if [ ! -d "$USERDIR" ]; then
-    # Tampilkan pesan error dengan warna merah (ANSI escape code)
     echo -e "\e[1;31mDirektori user '$USERDIR' \ntidak ditemukan atau sudah diubah/dihapus.\e[0m"
     echo -e "Untuk reset ulang setup direktori user, jalankan perintah '\e[1;33mresetuserdir\e[0m'"
     # perintah alias resetuserdir diatur di ~/.bash_aliases
